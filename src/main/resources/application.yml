@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /undercover
+  #访问日志
+  tomcat:
+    basedir: ${user.home}
+    accesslog:
+      enabled: true
+      buffered: false
+      #pattern: "%{X-Forwarded-For}i %l %u %t %r %s %b %D"
+      pattern: '%t %{X-Forwarded-For}i %a %A %m %U%q %s %D %I %B %{TOP50-SELLER-ID-HEADER}i %{TOP50-MEMBER-ID-HEADER}i %{TOP50-CONSUMER-TOKEN}i'  #日志格式
+      prefix: scan-eat-main-service-access-log
+      suffix: .log
+      file-date-format: .yyyy-MM-dd
+      directory: logs/access/
+
+spring:
+  profiles:
+    active: @env@
+  application:
+    name: undercover
+
+mybatis-plus:
+  type-aliases-package: com.thinkmacro.scaneat.model
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+knife4j:
+  enable: true
+
+
