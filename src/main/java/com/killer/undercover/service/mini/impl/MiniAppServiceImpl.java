@@ -27,7 +27,7 @@ public class MiniAppServiceImpl implements MiniAppService {
 
     @Override
     public String getGameRules() {
-        return null;
+        return "我是一个接口上面获取的规则";
     }
 
     @Override

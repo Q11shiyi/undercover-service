@@ -1,7 +1,11 @@
 package com.killer.undercover.controller.mini;
 
+import com.killer.undercover.common.exception.BusinessException;
+import com.killer.undercover.common.exception.ErrorCodeEnum;
 import com.killer.undercover.common.response.Response;
+import com.killer.undercover.controller.socket.WebSocket;
 import com.killer.undercover.dto.mini.req.CreateRoomReq;
+import com.killer.undercover.dto.mini.req.JoinRoomReq;
 import com.killer.undercover.dto.mini.req.MiniAppUserLoginReq;
 import com.killer.undercover.dto.mini.res.MemberUserInfoRes;
 import com.killer.undercover.dto.mini.res.RoomRes;
@@ -46,6 +50,11 @@ public class MiniAppController {
     @Resource
     private MiniAppService miniAppService;
 
+    @GetMapping("/broadcast")
+    public void broadcast(){
+        WebSocket.broadcast();
+    }
+
     @PostMapping("/auth-user-info")
     @ApiOperation("小程序授权用户信息")
     public Response<MemberUserInfoRes> authUserInfo(@RequestBody MiniAppUserLoginReq miniAppUserLoginReq) {
@@ -62,6 +71,21 @@ public class MiniAppController {
     @ApiOperation("创建房间")
     public Response<RoomRes> createRoom(@RequestBody CreateRoomReq createRoomReq) {
         return Response.success(miniAppService.createRoom(createRoomReq));
+    }
+
+    @PostMapping("/join")
+    @ApiOperation("加入房间")
+    public Response<RoomRes> joinRoom(@RequestBody JoinRoomReq joinRoomReq) {
+        RoomRes roomRes = new RoomRes();
+        System.out.println(joinRoomReq.getRoomKey());
+        if ("111111".equals(joinRoomReq.getRoomKey())){
+            throw new BusinessException(ErrorCodeEnum.AUTHENTICATION_FAILED);
+        }
+        if ("222222".equals(joinRoomReq.getRoomKey())){
+            throw new BusinessException(ErrorCodeEnum.ROOM_NOT_FIND);
+        }
+        roomRes.setRoomKey(joinRoomReq.getRoomKey());
+        return Response.success(roomRes);
     }
 
 
