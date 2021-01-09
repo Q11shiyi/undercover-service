@@ -16,21 +16,21 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 /**
  * Swagger配置类
  *
- * @author xuhaoming
- * @since 2020/6/13
+ * @author huanghuiqiang
+ * @create: 21.1.9 10:08
  */
 @Configuration
 @EnableSwagger2WebMvc
 @Import(BeanValidatorPluginsConfiguration.class)
 public class SwaggerConfig {
 
-    @Bean(value = "admin")
+    @Bean(value = "mini")
     public Docket apiV1() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
-                .groupName("后台")
+                .groupName("小程序端")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.killer.undercover.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.killer.undercover.controller.mini"))
                 .paths(PathSelectors.any())
                 .build();
     }
