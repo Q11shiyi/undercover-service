@@ -10,4 +10,11 @@ import com.killer.undercover.entity.Room;
 public interface RoomService extends IService<Room>{
 
 
+    /**
+     * 获取房间
+     * @param roomKey
+     * @param status
+     * @return
+     */
+    Room findByKeyAndStatus(String roomKey, boolean status);
 }

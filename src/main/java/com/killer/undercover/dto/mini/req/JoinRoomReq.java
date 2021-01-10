@@ -11,6 +11,5 @@ import lombok.Data;
 @ApiModel
 public class JoinRoomReq {
 
-
     private String roomKey;
 }

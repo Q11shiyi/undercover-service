@@ -12,7 +12,7 @@ public enum ErrorCodeEnum {
     /**
      * 系统通用异常
      */
-    AUTHENTICATION_FAILED(500,"系统异常，可爱的攻城狮正常努力修复中~"),
+    AUTHENTICATION_FAILED(501,"系统异常，可爱的攻城狮正常努力修复中~"),
 
     /**
      * 房间异常

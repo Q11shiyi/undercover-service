@@ -24,9 +24,9 @@ public class Room extends BaseEntity implements Serializable {
     /**
      * 房间号
      */
-    @TableField(value = "key")
+    @TableField(value = "room_key")
     @ApiModelProperty(value = "房间号")
-    private String key;
+    private String roomKey;
 
     /**
      * 平民数量

@@ -46,25 +46,12 @@ public class MiniAppController {
     @Resource
     private HttpServletRequest request;
 
-
     @Resource
     private MiniAppService miniAppService;
 
     @GetMapping("/broadcast")
     public void broadcast(){
         WebSocket.broadcast();
-    }
-
-    @PostMapping("/auth-user-info")
-    @ApiOperation("小程序授权用户信息")
-    public Response<MemberUserInfoRes> authUserInfo(@RequestBody MiniAppUserLoginReq miniAppUserLoginReq) {
-        return Response.success(miniAppService.authUserInfo(request, miniAppUserLoginReq));
-    }
-
-    @GetMapping("/game-rules")
-    @ApiOperation("获取游戏规则")
-    public Response<String> getGameRules() {
-        return Response.success(miniAppService.getGameRules());
     }
 
     @PostMapping("/room")
@@ -76,15 +63,7 @@ public class MiniAppController {
     @PostMapping("/join")
     @ApiOperation("加入房间")
     public Response<RoomRes> joinRoom(@RequestBody JoinRoomReq joinRoomReq) {
-        RoomRes roomRes = new RoomRes();
-        System.out.println(joinRoomReq.getRoomKey());
-        if ("111111".equals(joinRoomReq.getRoomKey())){
-            throw new BusinessException(ErrorCodeEnum.AUTHENTICATION_FAILED);
-        }
-        if ("222222".equals(joinRoomReq.getRoomKey())){
-            throw new BusinessException(ErrorCodeEnum.ROOM_NOT_FIND);
-        }
-        roomRes.setRoomKey(joinRoomReq.getRoomKey());
+        RoomRes roomRes = miniAppService.joinRoom(joinRoomReq);
         return Response.success(roomRes);
     }
 
