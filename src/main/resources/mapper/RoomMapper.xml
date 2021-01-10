@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.killer.undercover.mapper.RoomMapper">
+  <resultMap id="BaseResultMap" type="com.killer.undercover.entity.Room">
+    <!--@mbg.generated-->
+    <!--@Table room-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="key" jdbcType="CHAR" property="key" />
+    <result column="civilian_num" jdbcType="INTEGER" property="civilianNum" />
+    <result column="undercover_num" jdbcType="INTEGER" property="undercoverNum" />
+    <result column="whiteboard_num" jdbcType="INTEGER" property="whiteboardNum" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, `key`, civilian_num, undercover_num, whiteboard_num, `status`, create_time, update_time
+  </sql>
+</mapper>

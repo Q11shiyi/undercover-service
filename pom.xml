@@ -11,7 +11,7 @@
 <artifactId>undercover-service</artifactId>
 <version>1.0-SNAPSHOT</version>
 <name>undercover-service</name>
-<description>Demo project for Spring Boot</description>
+<description>who is undercover game</description>
 
 <properties>
     <java.version>1.8</java.version>
@@ -84,23 +84,10 @@
     </dependency>
 
 
+
     <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-devtools</artifactId>
-        <optional>true</optional>
-    </dependency>
-
-    <!--redis-->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-redis</artifactId>
-    </dependency>
-
-
-    <dependency>
-        <groupId>com.github.binarywang</groupId>
-        <artifactId>weixin-java-pay</artifactId>
-        <version>3.9.0</version>
+        <artifactId>spring-boot-starter-websocket</artifactId>
     </dependency>
 
 
@@ -109,17 +96,6 @@
         <artifactId>weixin-java-miniapp</artifactId>
         <version>3.9.0</version>
     </dependency>
-
-
-
-    <!--  微信支付分提供的工具包，用于生成公用的http-client客户端 -->
-    <dependency>
-        <groupId>com.github.wechatpay-apiv3</groupId>
-        <artifactId>wechatpay-apache-httpclient</artifactId>
-        <version>0.2.1</version>
-    </dependency>
-
-
 
 </dependencies>
 

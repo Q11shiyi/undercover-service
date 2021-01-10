@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 从高到低： OFF、FATAL、ERROR、WARN、INFO、DEBUG、TRACE、ALL -->
+<!-- 日志输出规则： 根据当前ROOT级别，日志输出时，级别高于root默认的级别时，会输出 -->
+<!-- 以下每个配置的filter： 过滤掉输出文件里面低于本级别的日志信息，只记录本级别的日志 -->
+
+<!--
+    Configuration：
+    1. root：必选节点，指定最基础的日志输出级别，只有level属性指定打印级别
+    2. property：可选节点，自定义变量，方便引用
+    3. appender：日志控制节点，包括输出格式、位置、过滤等
+    4. logger：设置包/类的特定输出
+    5. springProfile：配合Spring多环境配置
+-->
+
+<!--
+    scan： 设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true
+    scanPeriod: 设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒
+    debug: 当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false
+-->
+<configuration scan="true" scanPeroid="60 seconds" debug="false">
+    <springProperty scope="context" name="active" source="spring.profiles.active" />
+
+    <property name="log.path" value="${user.home}/logs"/>
+    <property name="projectName" value="scrm-main-service@${active}"/>
+
+    <property name="DEFAULT_LOG_PATTERN" value="%d %-5level [%X{X-Request-ID}][%thread] %logger{50} - %msg%n"/>
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%date{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) [%thread] %magenta(%logger{50}).%magenta(%M)  %cyan(%msg%n)"/>
+
+    <property name="CONSOLE_PATTERN" value="[%d{HH:mm:ss.SSS}][%p][%c{40}][%t] %m%n" />
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+
+    <appender name="notify" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!--日志名称，如果没有File 属性，那么只会使用FileNamePattern的文件路径规则
+      如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
+      的日志改名为今天的日期。即，<File> 的日志都是当天的。 -->
+        <File>${log.path}/${projectName}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.path}/${projectName}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--只保留最近90天的日志-->
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <File>${log.path}/error/error.${projectName}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.path}/error/error.${projectName}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--只保留最近90天的日志-->
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+        <!--        删选出error-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+  <springProfile name="hhq">
+        <root level="info">
+            <!-- 控制台输出 -->
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root level="info">
+            <appender-ref ref="notify"/>
+            <appender-ref ref="error"/>
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="test">
+        <root level="info">
+            <appender-ref ref="notify"/>
+            <appender-ref ref="error"/>
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="info">
+            <appender-ref ref="notify"/>
+            <appender-ref ref="error"/>
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+</configuration>
