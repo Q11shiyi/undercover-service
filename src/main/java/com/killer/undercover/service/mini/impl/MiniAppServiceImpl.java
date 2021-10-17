@@ -24,15 +24,7 @@ import javax.annotation.Resource;
 public class MiniAppServiceImpl implements MiniAppService {
 
     @Resource
-    private PlayerService playerService;
-    @Resource
-    private RoomPlayerService roomPlayerService;
-    @Resource
     private RoomService roomService;
-    @Resource
-    private RoomWordsService roomWordsService;
-    @Resource
-    private WordsService wordsService;
 
     @Override
     public RoomRes createRoom(CreateRoomReq createRoomReq) {
