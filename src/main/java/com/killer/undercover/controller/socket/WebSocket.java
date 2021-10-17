@@ -6,14 +6,18 @@ import com.killer.undercover.common.exception.ErrorCodeEnum;
 import com.killer.undercover.dto.mini.res.GameRes;
 import com.killer.undercover.dto.mini.res.HeartbeatRes;
 import com.killer.undercover.dto.mini.res.PlayerRes;
+import com.killer.undercover.enums.GameStatusEnum;
+import com.killer.undercover.logic.WebSocketLogic;
 import com.killer.undercover.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -28,10 +32,17 @@ import java.util.*;
  * @create: 21.1.9 17:41
  */
 @Slf4j
+@Controller
 @ServerEndpoint(value = "/websocket")
-@Component
 public class WebSocket {
 
+
+    private static WebSocketLogic webSocketLogic;
+
+    @Autowired
+    public void setWebSocketLogic(WebSocketLogic webSocketLogic) {
+        WebSocket.webSocketLogic = webSocketLogic;
+    }
 
     /**
      * 保存所有在线socket连接
@@ -53,6 +64,11 @@ public class WebSocket {
      */
     private String playerId;
 
+    /**
+     * 当前连接房间号
+     */
+    private String roomKey;
+
 
     /**
      * 处理连接建立
@@ -69,6 +85,7 @@ public class WebSocket {
         String playerId = session2playerId(session);
         this.session = session;
         this.playerId = playerId;
+        this.roomKey = roomKey;
 
         WEB_SOCKET_MAP.put(playerId, this);
 
@@ -119,19 +136,12 @@ public class WebSocket {
 
     private void gameHandle(String message) throws IOException {
         String url = "https://portrait.gitee.com/uploads/avatars/user/1698/5094699_hhq11_1608629649.png!avatar200";
-        if ("join".equals(message)) {
+        if (GameStatusEnum.JOIN.getCode().equals(message)) {
             log.info("玩家推送消息：新玩家加入房间");
-            GameRes gameRes = new GameRes();
-            PlayerRes playerRes1 = new PlayerRes().setOwnerStatus(true).setPlayerId(Long.valueOf(this.playerId)).setRole("卧底").setWord("红茶").setAvatarUrl(url).setName("名称").setIndex(1).setAliveStatus(true);
-            PlayerRes playerRes2 = new PlayerRes().setOwnerStatus(false).setPlayerId(2L).setRole("平民").setWord("绿茶").setAvatarUrl(url).setName("名称").setIndex(2).setAliveStatus(true);
-            PlayerRes playerRes3 = new PlayerRes().setOwnerStatus(false).setPlayerId(3L).setRole("平民").setWord("绿茶").setAvatarUrl(url).setName("名称").setIndex(3).setAliveStatus(true);
-            PlayerRes playerRes4 = new PlayerRes().setOwnerStatus(false).setPlayerId(4L).setRole("平民").setWord("绿茶").setAvatarUrl(url).setName("名称").setIndex(4).setAliveStatus(true);
-            List<PlayerRes> playerList = new ArrayList<>();
-            playerList.add(playerRes1);
-
-            gameRes.setStatus(0).setPlayerList(playerList).setCivilianWord("绿茶").setUndercoverWord("红茶").setWinRole("卧底").setIndex(1).setWord("红茶");
-            this.sendMessage(JsonUtils.toJson(gameRes));
-        } else if ("start".equals(message)) {
+            GameRes gameRes = webSocketLogic.join(this.roomKey, this.playerId);
+            List<String> idList = gameRes.getPlayerList().stream().map(p -> p.getPlayerId().toString()).collect(Collectors.toList());
+            WebSocket.sendByPlayerIds(idList,JsonUtils.toJson(gameRes));
+        } else if (GameStatusEnum.START.getCode().equals(message)) {
             log.info("玩家推送消息：开始游戏");
             GameRes gameRes = new GameRes();
             PlayerRes playerRes1 = new PlayerRes().setOwnerStatus(true).setPlayerId(Long.valueOf(this.playerId)).setRole("卧底").setWord("红茶").setAvatarUrl(url).setName("名称").setIndex(1).setAliveStatus(true);
@@ -153,9 +163,9 @@ public class WebSocket {
             playerList.add(new PlayerRes().setOwnerStatus(false).setPlayerId(11L).setRole("平民").setWord("绿茶").setAvatarUrl(url).setName("名称").setIndex(4).setAliveStatus(true));
             playerList.add(new PlayerRes().setOwnerStatus(false).setPlayerId(12L).setRole("平民").setWord("绿茶").setAvatarUrl(url).setName("名称").setIndex(4).setAliveStatus(true));
 
-            gameRes.setStatus(1).setPlayerList(playerList).setCivilianWord("绿茶").setUndercoverWord("红茶").setWinRole("卧底").setWord("红茶").setIndex(1).setWord("红茶");
+            gameRes.setStatus(1).setPlayerList(playerList).setCivilianWord("绿茶").setUndercoverWord("红茶").setWinRole("卧底");
             this.sendMessage(JsonUtils.toJson(gameRes));
-        } else if (message.contains("kill=")) {
+        } else if (message.contains(GameStatusEnum.KILL.getCode())) {
             String killPlayerId = message.replace("kill=", "");
             log.info("玩家推送消息：杀死玩家,玩家死亡：角色为平民"+ killPlayerId);
             GameRes gameRes = new GameRes();
@@ -183,7 +193,7 @@ public class WebSocket {
                 playerList.add(new PlayerRes().setOwnerStatus(false).setPlayerId(12L).setRole("平民").setWord("绿茶").setAvatarUrl(url).setName("名称").setIndex(4).setAliveStatus(true));
 
 
-                gameRes.setStatus(3).setPlayerList(playerList).setCivilianWord("绿茶").setUndercoverWord("红茶").setWinRole("平民").setWord("红茶").setIndex(1).setWord("红茶");
+                gameRes.setStatus(3).setPlayerList(playerList).setCivilianWord("绿茶").setUndercoverWord("红茶").setWinRole("平民");
                 this.sendMessage(JsonUtils.toJson(gameRes));
                 return;
             }
@@ -201,9 +211,9 @@ public class WebSocket {
             playerList.add(new PlayerRes().setOwnerStatus(false).setPlayerId(12L).setRole("平民").setWord("绿茶").setAvatarUrl(url).setName("名称").setIndex(4).setAliveStatus(true));
 
 
-            gameRes.setStatus(2).setPlayerList(playerList).setCivilianWord("绿茶").setUndercoverWord("红茶").setWord("红茶").setIndex(1).setWord("红茶");
+            gameRes.setStatus(2).setPlayerList(playerList).setCivilianWord("绿茶").setUndercoverWord("红茶");
             this.sendMessage(JsonUtils.toJson(gameRes));
-        } else if ("ping".equals(message)){
+        } else if (GameStatusEnum.PING.getCode().equals(message)){
             log.info("玩家推送消息：心跳");
             this.sendMessage(JsonUtils.toJson(new HeartbeatRes()));
         }
@@ -224,10 +234,14 @@ public class WebSocket {
      * 处理连接关闭
      */
     @OnClose
-    public void onClose() {
+    public void onClose() throws IOException {
         WEB_SOCKET_MAP.remove(this.playerId);
         reduceCount();
         log.info("连接关闭:{}", this.playerId);
+        // 下线
+        GameRes gameRes = webSocketLogic.close(this.roomKey, this.playerId);
+        List<String> idList = gameRes.getPlayerList().stream().map(p -> p.getPlayerId().toString()).collect(Collectors.toList());
+        WebSocket.sendByPlayerIds(idList,JsonUtils.toJson(gameRes));
     }
 
 
@@ -238,6 +252,20 @@ public class WebSocket {
      */
     public void sendMessage(String message) throws IOException {
         this.session.getBasicRemote().sendText(message);
+    }
+
+
+    /**
+     * 指定某些玩家广播消息
+     */
+    public static void sendByPlayerIds(List<String> playerIds, String message) throws IOException {
+        for (String playerId : playerIds) {
+            WebSocket webSocket = WebSocket.WEB_SOCKET_MAP.get(playerId);
+            // 玩家没有断开连接，则发送消息
+            if (webSocket != null) {
+                webSocket.sendMessage(message);
+            }
+        }
     }
 
     /**

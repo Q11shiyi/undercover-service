@@ -1,5 +1,6 @@
 package com.killer.undercover.dto.mini.res;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -17,7 +18,7 @@ public class GameRes {
     /**
      * 房间状态 0:未开始 1:开始游戏 2：投票选出 3：游戏结束
      */
-    @ApiModelProperty(value = "房间状态 0:新玩家进入 1:开始游戏 2：投票选出 3：游戏结束")
+    @ApiModelProperty(value = "房间状态 0:玩家进入或退出 1:开始游戏 2：投票选出 3：游戏结束")
     private Integer status;
 
     /**
@@ -25,18 +26,6 @@ public class GameRes {
      */
     @ApiModelProperty(value = "本轮胜利角色")
     private String winRole;
-
-    /**
-     * 本轮我的序号
-     */
-    @ApiModelProperty(value = "本轮我的序号")
-    private Integer index;
-
-    /**
-     * 本轮我的词语
-     */
-    @ApiModelProperty(value = "本轮我的词语")
-    private String word;
 
     /**
      * 平民词语
@@ -55,7 +44,23 @@ public class GameRes {
     @ApiModelProperty(value = "玩家列表")
     private List<PlayerRes> playerList;
 
+    /**
+     * 平民数量
+     */
+    @ApiModelProperty(value = "平民数量")
+    private Integer civilianNum;
 
+    /**
+     * 卧底数量
+     */
+    @ApiModelProperty(value = "卧底数量")
+    private Integer undercoverNum;
+
+    /**
+     * 白板数量
+     */
+    @ApiModelProperty(value = "白板数量")
+    private Integer whiteboardNum;
 
 
 

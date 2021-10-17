@@ -10,8 +10,11 @@ public enum GameStatusEnum {
     /**
      * 游戏状态枚举
      */
-    START("START", "开始游戏"),
-    KILL("KILL", "杀死玩家")
+    START("start", "开始游戏"),
+    JOIN("join", "加入游戏"),
+    KILL("kill", "杀死玩家"),
+    PING("ping", "socket心跳"),
+    ERROR("error", "异常消息")
     ;
 
     /**

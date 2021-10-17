@@ -35,6 +35,27 @@ public class RoomPlayer extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "玩家ID")
     private Long playerId;
 
+    /**
+     * 用户头像图片地址
+     */
+    @TableField(value = "avatar_url")
+    @ApiModelProperty(value = "用户头像图片地址")
+    private String avatarUrl;
+
+    /**
+     * 用户名
+     */
+    @TableField(value = "name")
+    @ApiModelProperty(value = "用户名")
+    private String name;
+
+    /**
+     * 是否在线
+     */
+    @TableField(value = "online")
+    @ApiModelProperty(value = "是否在线")
+    private Boolean online;
+
     private static final long serialVersionUID = 1L;
 
 

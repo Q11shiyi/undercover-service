@@ -7,11 +7,14 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="room_id" jdbcType="BIGINT" property="roomId" />
     <result column="player_id" jdbcType="BIGINT" property="playerId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
+    <result column="online" jdbcType="BIT" property="online" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, room_id, player_id, create_time, update_time
+    id, room_id, player_id, name,avatar_url, `online`, create_time, update_time
   </sql>
 </mapper>

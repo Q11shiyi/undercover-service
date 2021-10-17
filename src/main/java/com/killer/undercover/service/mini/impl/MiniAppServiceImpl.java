@@ -1,12 +1,9 @@
 package com.killer.undercover.service.mini.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.killer.undercover.common.exception.BusinessException;
 import com.killer.undercover.common.exception.ErrorCodeEnum;
 import com.killer.undercover.dto.mini.req.CreateRoomReq;
 import com.killer.undercover.dto.mini.req.JoinRoomReq;
-import com.killer.undercover.dto.mini.req.MiniAppUserLoginReq;
-import com.killer.undercover.dto.mini.res.MemberUserInfoRes;
 import com.killer.undercover.dto.mini.res.RoomRes;
 import com.killer.undercover.entity.Room;
 import com.killer.undercover.service.base.*;
@@ -16,8 +13,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 
 /**
@@ -47,7 +42,7 @@ public class MiniAppServiceImpl implements MiniAppService {
         Room room = new Room();
         BeanUtils.copyProperties(createRoomReq,room);
         //计算随机房间号
-        //优化房间号重复问题TODO
+        //TODO 优化房间号重复问题
         int roomKeyInt = (int) ((Math.random() * 9 + 1) * 100000);
         String formatKey = "%06d";
         String roomKey = String.format(formatKey, roomKeyInt);

@@ -1,5 +1,6 @@
 package com.killer.undercover.service.base;
 
+import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.killer.undercover.entity.Player;
 
@@ -10,4 +11,5 @@ import com.killer.undercover.entity.Player;
 public interface PlayerService extends IService<Player>{
 
 
+    void register(WxMaUserInfo userInfo);
 }

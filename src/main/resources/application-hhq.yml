@@ -20,8 +20,8 @@ mybatis-plus:
 wx:
   miniapp:
     configs:
-      - appid: wxf0eaa400e8368722
-        secret: 813846576a28b49863bbae2dd7d27113
+      - appid: wxb2e6979bec8adf9a
+        secret: c78d81b3ccb63275dbe1d681cd32aaae
         token: #微信小程序消息服务器配置的token
         aesKey: #微信小程序消息服务器配置的EncodingAESKey
         msgDataFormat: JSON
